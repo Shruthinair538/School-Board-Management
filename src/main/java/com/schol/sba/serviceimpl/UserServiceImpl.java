@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ResponseStructure<UserResponse> userStructure;
 	
+	@Autowired
+	private User user1;
+	
 	private User mapToUser(UserRequest request) {
 		return User.builder()
 				.userName(request.getUserName())
@@ -59,11 +62,12 @@ public class UserServiceImpl implements UserService{
 			throw new AdminAlreadyExistException("Can have only one Admin!!!");
 			
 		 }else {
+			if(user1.isDeleted()==false) {
 			User user = userRepo.save(mapToUser(request));
 			userStructure.setStatusCode(HttpStatus.CREATED.value());
 			userStructure.setMessage("User object registered successfully!!!");
 			userStructure.setData(mapToResponse(user));
-	
+			}
 	
 		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.CREATED);
 		 }
@@ -79,6 +83,20 @@ public class UserServiceImpl implements UserService{
 		userStructure.setData(mapToResponse(user));
 		
 		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.FOUND);
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> deleteUser(int userId) {
+		
+		User user = userRepo.findById(userId).orElseThrow(()-> new UserNotFoundByIdException("User by this ID doesnt exist!!!"));
+		userRepo.delete(user);
+		user1.setDeleted(true);
+		
+		userStructure.setStatusCode(HttpStatus.OK.value());
+		userStructure.setMessage("Data Deleted successfully!!!");
+		userStructure.setData(mapToResponse(user));
+		
+		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.OK);
 	}
 
 	

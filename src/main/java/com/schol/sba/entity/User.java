@@ -1,5 +1,7 @@
 package com.schol.sba.entity;
 
+import org.springframework.stereotype.Component;
+
 import com.schol.sba.enums.UserRole;
 
 import jakarta.persistence.Column;
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

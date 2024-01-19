@@ -1,14 +1,16 @@
 package com.schol.sba.entity;
 
-import org.springframework.stereotype.Component;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.schol.sba.enums.UserRole;
+import com.schol.sba.enums.ProgramType;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,32 +24,18 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
-public class User {
+public class AcademicProgram {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int userId;
-	
-	@Column(unique = true)
-	private String userName;
-	private String userPassword;
-	private String userFirstName;
-	private String userLastName;
-	private long userContactNo;
-	@Column(unique = true)
-	private String userEmail;
-	private UserRole userRole;
-	private boolean isDeleted;
+	private int programId;
+	private ProgramType programType;
+	private String programName;
+	private LocalTime beginsAt;
+	private LocalTime endsAt;
 	
 	@ManyToOne
-	private School school1;
-	
-	
-	
-	
-	
-	
-	
+	private School school;
 	
 	
 

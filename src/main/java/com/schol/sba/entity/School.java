@@ -38,6 +38,12 @@ public class School {
 	@OneToOne
 	private Schedule schedule;
 	
+	@OneToMany(mappedBy = "school")
+	private List<AcademicProgram> aList=new ArrayList<>();
+	
+	@OneToMany(mappedBy = "school1")
+	private List<User> uList=new ArrayList<>();
+	
 	
 	
 	

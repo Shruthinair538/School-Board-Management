@@ -7,13 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.schol.sba.entity.AcademicProgram;
 import com.schol.sba.entity.User;
 import com.schol.sba.enums.UserRole;
+import com.schol.sba.exception.AcademicProgramNorFoundException;
 import com.schol.sba.exception.AdminAlreadyExistException;
+import com.schol.sba.exception.AdminCannotBeAssignedToProgramException;
 import com.schol.sba.exception.UserNotFoundByIdException;
+import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.UserRepository;
 import com.schol.sba.requestdto.UserRequest;
-import com.schol.sba.requestdto.UserResponse;
+import com.schol.sba.responsedto.UserResponse;
 import com.schol.sba.service.UserService;
 import com.schol.sba.util.ResponseStructure;
 
@@ -29,6 +33,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private User user1;
+	
+	@Autowired
+	private AcademicProgramRepository academicRepo;
 	
 	private User mapToUser(UserRequest request) {
 		return User.builder()
@@ -97,6 +104,32 @@ public class UserServiceImpl implements UserService{
 		userStructure.setData(mapToResponse(user));
 		
 		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> assignUser(int userId, int programId) {
+		User user = userRepo.findById(userId).orElseThrow(()-> new UserNotFoundByIdException("User not found!!"));
+		AcademicProgram academicProgram = academicRepo.findById(programId).orElseThrow(() -> new AcademicProgramNorFoundException("Admin not found!!!"));
+		
+		if(user.getUserRole()==UserRole.ADMIN) {
+			throw new AdminCannotBeAssignedToProgramException("Admin cannot be assigned ");
+		}
+		
+		else {
+			user.getAcademicProgram().add(academicProgram);
+			userRepo.save(user);
+			academicProgram.getUsers().add(user);
+			academicRepo.save(academicProgram);
+			
+			
+			userStructure.setStatusCode(HttpStatus.OK.value());
+			userStructure.setMessage("Updated successfully!!!");
+			userStructure.setData(mapToResponse(user));
+			
+			return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.OK);
+		
+			
+		}
 	}
 	
 	

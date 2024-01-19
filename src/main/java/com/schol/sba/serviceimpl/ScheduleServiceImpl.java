@@ -17,7 +17,7 @@ import com.schol.sba.exception.UserNotFoundByIdException;
 import com.schol.sba.repository.ScheduleRepository;
 import com.schol.sba.repository.SchoolRepo;
 import com.schol.sba.requestdto.ScheduleRequest;
-import com.schol.sba.requestdto.ScheduleResponse;
+import com.schol.sba.responsedto.ScheduleResponse;
 import com.schol.sba.service.ScheduleService;
 import com.schol.sba.util.ResponseStructure;
 

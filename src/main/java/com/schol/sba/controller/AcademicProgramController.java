@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.schol.sba.requestdto.AcademicProgramRequest;
-import com.schol.sba.requestdto.AcademicProgramResponse;
+import com.schol.sba.responsedto.AcademicProgramResponse;
 import com.schol.sba.service.AcademicProgramService;
 import com.schol.sba.util.ResponseStructure;
 

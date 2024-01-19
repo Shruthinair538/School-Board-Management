@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.schol.sba.requestdto.ScheduleRequest;
-import com.schol.sba.requestdto.ScheduleResponse;
+import com.schol.sba.responsedto.ScheduleResponse;
 import com.schol.sba.service.ScheduleService;
 import com.schol.sba.util.ResponseStructure;
 

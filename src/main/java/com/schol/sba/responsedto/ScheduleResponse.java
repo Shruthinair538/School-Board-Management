@@ -1,4 +1,4 @@
-package com.schol.sba.requestdto;
+package com.schol.sba.responsedto;
 
 import java.time.Duration;
 import java.time.LocalTime;

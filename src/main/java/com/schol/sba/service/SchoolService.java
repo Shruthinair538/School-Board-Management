@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.schol.sba.entity.School;
 import com.schol.sba.requestdto.SchoolRequest;
-import com.schol.sba.requestdto.SchoolResponse;
-import com.schol.sba.requestdto.UserResponse;
+import com.schol.sba.responsedto.SchoolResponse;
+import com.schol.sba.responsedto.UserResponse;
 import com.schol.sba.util.ResponseStructure;
 
 public interface SchoolService {

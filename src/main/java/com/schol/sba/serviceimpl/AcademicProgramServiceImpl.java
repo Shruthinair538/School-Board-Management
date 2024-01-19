@@ -15,7 +15,7 @@ import com.schol.sba.exception.SchoolNotFoundException;
 import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.SchoolRepo;
 import com.schol.sba.requestdto.AcademicProgramRequest;
-import com.schol.sba.requestdto.AcademicProgramResponse;
+import com.schol.sba.responsedto.AcademicProgramResponse;
 import com.schol.sba.service.AcademicProgramService;
 import com.schol.sba.util.ResponseStructure;
 
@@ -40,7 +40,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 				.build();
 	}
 	
-	private AcademicProgramResponse mapToAcademicProgramResponse(AcademicProgram response) {
+	public AcademicProgramResponse mapToAcademicProgramResponse(AcademicProgram response) {
 		return AcademicProgramResponse.builder()
 				.programId(response.getProgramId())
 				.programType(response.getProgramType())

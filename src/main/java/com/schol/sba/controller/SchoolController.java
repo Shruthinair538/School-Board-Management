@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.schol.sba.entity.School;
 import com.schol.sba.requestdto.SchoolRequest;
-import com.schol.sba.requestdto.SchoolResponse;
-import com.schol.sba.requestdto.UserResponse;
+import com.schol.sba.responsedto.SchoolResponse;
+import com.schol.sba.responsedto.UserResponse;
 import com.schol.sba.service.SchoolService;
 import com.schol.sba.util.ResponseStructure;
 
@@ -31,6 +31,7 @@ public class SchoolController {
 		return schoolService.createSchool(userId,request);
 		
 	}
+	
 	
 	
 	

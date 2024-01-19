@@ -12,9 +12,9 @@ import com.schol.sba.enums.UserRole;
 import com.schol.sba.exception.AdminAlreadyExistException;
 import com.schol.sba.exception.UserNotFoundByIdException;
 import com.schol.sba.repository.UserRepository;
+import com.schol.sba.requestdto.UserRequest;
+import com.schol.sba.requestdto.UserResponse;
 import com.schol.sba.service.UserService;
-import com.schol.sba.userdto.UserRequest;
-import com.schol.sba.userdto.UserResponse;
 import com.schol.sba.util.ResponseStructure;
 
 
@@ -98,6 +98,8 @@ public class UserServiceImpl implements UserService{
 		
 		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.OK);
 	}
+	
+	
 
 	
 

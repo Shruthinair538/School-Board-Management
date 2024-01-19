@@ -2,7 +2,7 @@ package com.schol.sba.util;
 
 import org.springframework.stereotype.Component;
 
-import com.schol.sba.userdto.UserResponse;
+import com.schol.sba.requestdto.UserResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

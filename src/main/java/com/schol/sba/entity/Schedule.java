@@ -1,13 +1,25 @@
 package com.schol.sba.entity;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Schedule {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,66 +27,14 @@ public class Schedule {
 	private LocalTime opensAt;
 	private int classHoursPerDay;
 	private LocalTime closesAt;
-	private LocalTime ClassHourLength;
+	private Duration ClassHourLengthInMinutes;
 	private LocalTime breakTime;
-	private LocalTime breakLength;
+	private Duration breakLengthInMinutes;
 	private LocalTime lunchTime;
-	private LocalTime lunchLength;
+	private Duration lunchLengthInMinutes;
 	
-	public int getScheduleId() {
-		return scheduleId;
-	}
-	public void setScheduleId(int scheduleId) {
-		this.scheduleId = scheduleId;
-	}
-	public LocalTime getOpensAt() {
-		return opensAt;
-	}
-	public void setOpensAt(LocalTime opensAt) {
-		this.opensAt = opensAt;
-	}
-	public int getClassHoursPerDay() {
-		return classHoursPerDay;
-	}
-	public void setClassHoursPerDay(int classHoursPerDay) {
-		this.classHoursPerDay = classHoursPerDay;
-	}
-	public LocalTime getClosesAt() {
-		return closesAt;
-	}
-	public void setClosesAt(LocalTime closesAt) {
-		this.closesAt = closesAt;
-	}
-	public LocalTime getClassHourLength() {
-		return ClassHourLength;
-	}
-	public void setClassHourLength(LocalTime classHourLength) {
-		ClassHourLength = classHourLength;
-	}
-	public LocalTime getBreakTime() {
-		return breakTime;
-	}
-	public void setBreakTime(LocalTime breakTime) {
-		this.breakTime = breakTime;
-	}
-	public LocalTime getBreakLength() {
-		return breakLength;
-	}
-	public void setBreakLength(LocalTime breakLength) {
-		this.breakLength = breakLength;
-	}
-	public LocalTime getLunchTime() {
-		return lunchTime;
-	}
-	public void setLunchTime(LocalTime lunchTime) {
-		this.lunchTime = lunchTime;
-	}
-	public LocalTime getLunchLength() {
-		return lunchLength;
-	}
-	public void setLunchLength(LocalTime lunchLength) {
-		this.lunchLength = lunchLength;
-	}
+	@OneToOne
+	private School school;
 	
 	
 

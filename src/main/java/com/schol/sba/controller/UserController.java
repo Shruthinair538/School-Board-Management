@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.schol.sba.requestdto.UserRequest;
+import com.schol.sba.requestdto.UserResponse;
 import com.schol.sba.service.UserService;
-import com.schol.sba.userdto.UserRequest;
-import com.schol.sba.userdto.UserResponse;
 import com.schol.sba.util.ResponseStructure;
 
 @Controller
@@ -38,5 +38,7 @@ public class UserController {
 	public ResponseEntity<ResponseStructure<UserResponse>> deleteUser(@PathVariable int userId){
 		return userService.deleteUser(userId);
 	}
+	
+	
 
 }

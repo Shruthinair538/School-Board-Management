@@ -1,4 +1,4 @@
-package com.schol.sba.userdto;
+package com.schol.sba.requestdto;
 
 
 

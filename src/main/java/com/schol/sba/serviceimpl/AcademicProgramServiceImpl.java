@@ -1,5 +1,8 @@
 package com.schol.sba.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -58,6 +61,26 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 		structure.setMessage("Academic programs added successfully!!!!");
 		structure.setData(mapToAcademicProgramResponse(academicProgram));
 		return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure,HttpStatus.CREATED);
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<List<AcademicProgramResponse>>> findAcademicProgram(int schoolId) {
+		return schoolRepo.findById(schoolId).map(school->{
+			List<AcademicProgram> aList = school.getAList();
+			ResponseStructure<List<AcademicProgramResponse>> rStructure=new ResponseStructure<>();
+			List<AcademicProgramResponse> l=new ArrayList<>();
+			
+			for(AcademicProgram a:aList) {
+				l.add(mapToAcademicProgramResponse(a));
+			}
+			
+			rStructure.setStatusCode(HttpStatus.FOUND.value());
+			rStructure.setMessage("Academic programs found successfully!!!!");
+			rStructure.setData(l);
+			return new ResponseEntity<ResponseStructure<List<AcademicProgramResponse>>>(rStructure,HttpStatus.FOUND);
+			
+		}).orElseThrow(()-> new SchoolNotFoundException("School doesn't exist!!!"));
+		
 	}
 
 }

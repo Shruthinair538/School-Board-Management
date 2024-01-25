@@ -1,5 +1,7 @@
 package com.schol.sba.service;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import com.schol.sba.requestdto.SubjectRequest;
@@ -11,6 +13,7 @@ public interface SubjectService {
 
 	ResponseEntity<ResponseStructure<AcademicProgramResponse>> addSubjectList(int programId, SubjectRequest request);
 
-//	ResponseEntity<ResponseStructure<SubjectResponse>> findAllSubjects();
+	ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects();
 
+	
 }

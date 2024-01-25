@@ -1,5 +1,6 @@
 package com.schol.sba.responsedto;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.schol.sba.enums.ProgramType;
@@ -20,7 +21,7 @@ public class AcademicProgramResponse {
 	private int programId;
 	private ProgramType programType;
 	private String programName;
-	private LocalTime beginsAt;
-	private LocalTime endsAt;
+	private LocalDate beginsAt;
+	private LocalDate endsAt;
 
 }

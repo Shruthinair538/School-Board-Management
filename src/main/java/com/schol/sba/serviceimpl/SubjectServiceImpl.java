@@ -2,6 +2,7 @@ package com.schol.sba.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,9 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.sym.Name;
 import com.schol.sba.entity.Subject;
+import com.schol.sba.entity.User;
+import com.schol.sba.enums.UserRole;
 import com.schol.sba.exception.AcademicProgramNorFoundException;
+import com.schol.sba.exception.SubjectNotFoundException;
+import com.schol.sba.exception.UserNotFoundByIdException;
 import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.SubjectRepository;
+import com.schol.sba.repository.UserRepository;
 import com.schol.sba.requestdto.SubjectRequest;
 import com.schol.sba.responsedto.AcademicProgramResponse;
 import com.schol.sba.responsedto.SubjectResponse;
@@ -33,6 +39,19 @@ public class SubjectServiceImpl implements SubjectService{
 	
 	@Autowired
 	private AcademicProgramServiceImpl academicService;
+	
+	@Autowired
+	private ResponseStructure<List<SubjectResponse>> subStructure;
+	
+	@Autowired
+	private UserRepository userRepo;
+	
+	public SubjectResponse mapToSubjectResponse(Subject subject) {
+		return SubjectResponse.builder()
+				.subjectId(subject.getSubjectId())
+				.subjectName(subject.getSubjectName())
+				.build();
+	}
 
 
 	@Override
@@ -84,16 +103,26 @@ public class SubjectServiceImpl implements SubjectService{
 	}
 
 
-//	@Override
-//	public ResponseEntity<ResponseStructure<SubjectResponse>> findAllSubjects() {
-//		List<Subject> list = subjectRepo.findAll();
-//		structure.setStatusCode(HttpStatus.FOUND.value());
-//		structure.setMessage("Fetched all subjects successfully!!!!");
-//		for(List<Subject> l :list) {
-//			System.out.println(l);
-//		}
-//		return new ResponseEntity<ResponseStructure<SubjectResponse>>(HttpStatus.FOUND);
-//			 
-//	}
+	@Override
+	public ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects() {
+		List<Subject> list = subjectRepo.findAll();
+		
+		List<SubjectResponse> subjectsResponse=list.stream()
+				.map(u->mapToSubjectResponse(u))
+				.collect(Collectors.toList());
+		
+		
+		subStructure.setStatusCode(HttpStatus.FOUND.value());
+		subStructure.setMessage("Fetched all subjects successfully!!!!");
+		subStructure.setData(subjectsResponse);
+		return new ResponseEntity<ResponseStructure<List<SubjectResponse>>>(subStructure,HttpStatus.FOUND);
+			 
+	}
+
+
+	
+
+
+	
 
 }

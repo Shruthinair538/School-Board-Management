@@ -20,7 +20,7 @@ public class ScheduleResponse {
 	private LocalTime opensAt;
 	private int classHoursPerDay;
 	private LocalTime closesAt;
-	private int ClassHourLengthInMinutes;
+	private int classHourLengthInMinutes;
 	private LocalTime breakTime;
 	private int breakLengthInMinutes;
 	private LocalTime lunchTime;

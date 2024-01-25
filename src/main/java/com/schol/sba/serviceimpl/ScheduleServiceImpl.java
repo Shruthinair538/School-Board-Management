@@ -38,7 +38,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 				.opensAt(request.getOpensAt())
 				.classHoursPerDay(request.getClassHoursPerDay())
 				.closesAt(request.getClosesAt())
-				.ClassHourLengthInMinutes(Duration.ofMinutes(request.getClassHourLengthInMinutes()))
+				.classHourLengthInMinutes(Duration.ofMinutes(request.getClassHourLengthInMinutes()))
 				.breakTime(request.getBreakTime())
 				.breakLengthInMinutes(Duration.ofMinutes(request.getBreakLengthInMinutes()))
 				.lunchTime(request.getLunchTime())
@@ -55,7 +55,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 				.lunchTime(schedule.getLunchTime())
 				.closesAt(schedule.getClosesAt())
 				.classHoursPerDay(schedule.getClassHoursPerDay())
-				.ClassHourLengthInMinutes((int)(schedule.getClassHourLengthInMinutes().toMinutes()))
+				.classHourLengthInMinutes((int)(schedule.getClassHourLengthInMinutes().toMinutes()))
 				.breakLengthInMinutes((int)(schedule.getBreakLengthInMinutes().toMinutes()))
 				.lunchLengthInMinutes((int)(schedule.getLunchLengthInMinutes().toMinutesPart()))
 				.build();

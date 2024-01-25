@@ -5,16 +5,24 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.schol.sba.entity.AcademicProgram;
+import com.schol.sba.entity.School;
+import com.schol.sba.entity.Subject;
 import com.schol.sba.entity.User;
 import com.schol.sba.enums.UserRole;
 import com.schol.sba.exception.AcademicProgramNorFoundException;
 import com.schol.sba.exception.AdminAlreadyExistException;
 import com.schol.sba.exception.AdminCannotBeAssignedToProgramException;
+import com.schol.sba.exception.AdminCannotBeRegisteredException;
+import com.schol.sba.exception.OnlyTeacherCanBeAssignedException;
+import com.schol.sba.exception.SchoolNotFoundException;
+import com.schol.sba.exception.SubjectNotFoundException;
 import com.schol.sba.exception.UserNotFoundByIdException;
 import com.schol.sba.repository.AcademicProgramRepository;
+import com.schol.sba.repository.SubjectRepository;
 import com.schol.sba.repository.UserRepository;
 import com.schol.sba.requestdto.UserRequest;
 import com.schol.sba.responsedto.UserResponse;
@@ -24,6 +32,8 @@ import com.schol.sba.util.ResponseStructure;
 
 @Service
 public class UserServiceImpl implements UserService{
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -37,10 +47,13 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private AcademicProgramRepository academicRepo;
 	
+	@Autowired
+	private SubjectRepository subjectRepo;
+	
 	private User mapToUser(UserRequest request) {
 		return User.builder()
 				.userName(request.getUserName())
-		        .userPassword(request.getUserPassword())
+				.userPassword(passwordEncoder.encode(request.getUserPassword()))
 		        .userFirstName(request.getUserFirstName())
 		        .userLastName(request.getUserLastName())
 		        .userContactNo(request.getUserContactNo())
@@ -61,20 +74,55 @@ public class UserServiceImpl implements UserService{
 				.build();
 			   
 	}
+	
+	private School findAdminSchool() {
+		User admin = userRepo.findByUserRole(UserRole.ADMIN);
+		if(admin !=null) {
+			return admin.getSchool1();
+		}
+		else {
+			throw new SchoolNotFoundException("School not found!!");
+		}
+		
+	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> registerAdmin(UserRequest request) {
+		if(userRepo.existsByUserRole(UserRole.ADMIN))
+		{
+			throw new AdminAlreadyExistException("Admin already exists!!!");
+		}
+		else {
+			User user = userRepo.save(mapToUser(request));
+			userStructure.setStatusCode(HttpStatus.CREATED.value());
+			userStructure.setMessage("Admin registered successfully!!!");
+			userStructure.setData(mapToResponse(user));
+			
+	
+		  return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.CREATED);	
+		}
+		
+	}
 
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> registerUser(UserRequest request) {
+		School adminSchool =findAdminSchool();
 		if(request.getUserRole()==UserRole.ADMIN && userRepo.existsByUserRole(UserRole.ADMIN))
 		 {
-			throw new AdminAlreadyExistException("Can have only one Admin!!!");
+			throw new AdminCannotBeRegisteredException("Only Teacher and Student can be registered!!!");
 			
 		 }else {
-			if(user1.isDeleted()==false) {
+//			if(user1.isDeleted()==false) {
+			
 			User user = userRepo.save(mapToUser(request));
+            if(request.getUserRole()==UserRole.TEACHER || request.getUserRole()==UserRole.STUDENT ) {
+				user.setSchool1(adminSchool);
+			}
+            User savUser=userRepo.save(user);
 			userStructure.setStatusCode(HttpStatus.CREATED.value());
 			userStructure.setMessage("User object registered successfully!!!");
-			userStructure.setData(mapToResponse(user));
-			}
+			userStructure.setData(mapToResponse(savUser));
+//			}
 	
 		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.CREATED);
 		 }
@@ -131,6 +179,33 @@ public class UserServiceImpl implements UserService{
 			
 		}
 	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> addSubjectToTeacher(int subjectId, int userId) {
+		Subject subject = subjectRepo.findById(subjectId).orElseThrow(()-> new SubjectNotFoundException("Subject not found!!"));
+		User user = userRepo.findById(userId).orElseThrow(()-> new UserNotFoundByIdException("User not found!!"));
+		
+		if(user.getUserRole().equals(UserRole.TEACHER)) {
+			user.setSubject(subject);
+			userRepo.save(user);
+			
+			userStructure.setStatusCode(HttpStatus.OK.value());
+			userStructure.setMessage("Added subject to the Teacher successfully!!!");
+			userStructure.setData(mapToResponse(user));
+			
+			return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.OK);
+			
+		}
+		else {
+			throw new OnlyTeacherCanBeAssignedException("Only the teacher can be assigned to subject!!");
+		}
+
+	
+	}
+
+	
+	
+	
 	
 	
 

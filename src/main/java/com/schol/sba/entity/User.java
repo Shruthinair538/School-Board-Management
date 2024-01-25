@@ -49,6 +49,9 @@ public class User {
 	@ManyToMany
 	private List<AcademicProgram> academicProgram=new ArrayList<>();
 	
+	@ManyToOne
+	private Subject subject;
+	
 	
 	
 	

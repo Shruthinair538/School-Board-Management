@@ -1,11 +1,9 @@
 package com.schol.sba.entity;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import com.schol.sba.enums.ProgramType;
+import com.schol.sba.enums.ClassStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,32 +21,26 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class AcademicProgram {
+@NoArgsConstructor
+@Builder
+public class ClassHour {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int programId;
-	private ProgramType programType;
-	private String programName;
-	private LocalDate beginsAt;
-	private LocalDate endsAt;
+	private int classHourId;
+	private LocalDateTime beginsAt;
+	private LocalDateTime endsAt;
+	private int roomNo;
+	private ClassStatus classStatus;
 	
 	@ManyToOne
-	private School school;
+	private Subject subject;
 	
-	@ManyToMany
-	private List<Subject> subjects;
+	@ManyToOne
+	private AcademicProgram aList;
 	
-	@ManyToMany
-	private List<User> users;
-	
-	@OneToMany
-	private List<ClassHour> classHours;
-	
-	
-	
+	@ManyToOne
+	private User user;
 
 }

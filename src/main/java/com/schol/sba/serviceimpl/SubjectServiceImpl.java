@@ -2,6 +2,7 @@ package com.schol.sba.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.sym.Name;
+import com.schol.sba.entity.AcademicProgram;
 import com.schol.sba.entity.Subject;
-import com.schol.sba.entity.User;
-import com.schol.sba.enums.UserRole;
 import com.schol.sba.exception.AcademicProgramNorFoundException;
-import com.schol.sba.exception.SubjectNotFoundException;
-import com.schol.sba.exception.UserNotFoundByIdException;
+
 import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.SubjectRepository;
 import com.schol.sba.repository.UserRepository;
@@ -42,9 +40,7 @@ public class SubjectServiceImpl implements SubjectService{
 	
 	@Autowired
 	private ResponseStructure<List<SubjectResponse>> subStructure;
-	
-	@Autowired
-	private UserRepository userRepo;
+
 	
 	public SubjectResponse mapToSubjectResponse(Subject subject) {
 		return SubjectResponse.builder()
@@ -120,9 +116,43 @@ public class SubjectServiceImpl implements SubjectService{
 	}
 
 
-	
+	@Override
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> updateSubjectList(int programId,
+			SubjectRequest request) {
+		AcademicProgram academicProgram = academicRepo.findById(programId)
+                .orElseThrow(() -> new RuntimeException("Academic program not found"));
 
+        List<Subject> existingSubjects = academicProgram.getSubjects();
 
+        for (String subjectnames :request.getSubjectName() ) {
+        	Optional<Subject> existingSubject = subjectRepo.findBySubjectName(subjectnames);
+
+            if (existingSubject.isPresent()) {
+                if (!existingSubjects.contains(existingSubject.get())) {
+                    existingSubjects.add(existingSubject.get());
+                }
+            } else {
+                Subject newSubject = new Subject();
+                newSubject.setSubjectName(subjectnames);
+                subjectRepo.save(newSubject);
+                existingSubjects.add(newSubject);
+            }
+        }
+
+        academicRepo.save(academicProgram);
+        structure.setStatusCode(HttpStatus.OK.value());
+		structure.setMessage("updated the subject list to academic program");
+		structure.setData(academicService.mapToAcademicProgramResponse(academicProgram));
+		return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure,HttpStatus.OK); 
+    }
 	
 
 }
+
+
+	
+
+
+	
+
+

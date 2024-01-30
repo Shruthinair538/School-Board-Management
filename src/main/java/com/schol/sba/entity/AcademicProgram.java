@@ -1,9 +1,12 @@
 package com.schol.sba.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import com.schol.sba.enums.ProgramType;
 
@@ -26,6 +29,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class AcademicProgram {
 	
 	@Id
@@ -43,7 +47,7 @@ public class AcademicProgram {
 	private List<Subject> subjects;
 	
 	@ManyToMany
-	private List<User> users;
+	private List<User> users=new ArrayList<>();
 	
 	@OneToMany
 	private List<ClassHour> classHours;

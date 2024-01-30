@@ -27,7 +27,7 @@ public class ScheduleController {
 		return service.addSchedule(schoolId,request);
 	}
 	
-	@GetMapping("schools/{schoolId}")
+	@GetMapping("school/{schoolId}")
 	public ResponseEntity<ResponseStructure<ScheduleResponse>> getSchedule(@PathVariable int schoolId){
 		return service.getSchedule(schoolId);
 	}

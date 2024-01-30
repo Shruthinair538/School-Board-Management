@@ -1,6 +1,9 @@
 package com.schol.sba.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.SubjectRepository;
 import com.schol.sba.repository.UserRepository;
 import com.schol.sba.requestdto.UserRequest;
+import com.schol.sba.responsedto.AcademicProgramResponse;
 import com.schol.sba.responsedto.UserResponse;
 import com.schol.sba.service.UserService;
 import com.schol.sba.util.ResponseStructure;
@@ -40,6 +44,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private ResponseStructure<UserResponse> userStructure;
+	
+	@Autowired
+	private ResponseStructure<List<UserResponse>> listStructure;
 	
 	@Autowired
 	private User user1;
@@ -74,6 +81,9 @@ public class UserServiceImpl implements UserService{
 				.build();
 			   
 	}
+	
+	   
+	
 	
 	private School findAdminSchool() {
 		User admin = userRepo.findByUserRole(UserRole.ADMIN);
@@ -112,7 +122,7 @@ public class UserServiceImpl implements UserService{
 			throw new AdminCannotBeRegisteredException("Only Teacher and Student can be registered!!!");
 			
 		 }else {
-//			if(user1.isDeleted()==false) {
+			
 			
 			User user = userRepo.save(mapToUser(request));
             if(request.getUserRole()==UserRole.TEACHER || request.getUserRole()==UserRole.STUDENT ) {
@@ -122,7 +132,7 @@ public class UserServiceImpl implements UserService{
 			userStructure.setStatusCode(HttpStatus.CREATED.value());
 			userStructure.setMessage("User object registered successfully!!!");
 			userStructure.setData(mapToResponse(savUser));
-//			}
+			
 	
 		return new ResponseEntity<ResponseStructure<UserResponse>>(userStructure,HttpStatus.CREATED);
 		 }
@@ -185,7 +195,7 @@ public class UserServiceImpl implements UserService{
 		Subject subject = subjectRepo.findById(subjectId).orElseThrow(()-> new SubjectNotFoundException("Subject not found!!"));
 		User user = userRepo.findById(userId).orElseThrow(()-> new UserNotFoundByIdException("User not found!!"));
 		
-		if(user.getUserRole().equals(UserRole.TEACHER)) {
+		if(user.getUserRole().equals(UserRole.TEACHER) && user.getSubject()==null) {
 			user.setSubject(subject);
 			userRepo.save(user);
 			
@@ -197,11 +207,21 @@ public class UserServiceImpl implements UserService{
 			
 		}
 		else {
-			throw new OnlyTeacherCanBeAssignedException("Only the teacher can be assigned to subject!!");
+			throw new OnlyTeacherCanBeAssignedException("Only the teacher with no subjects can be assigned to subject!!");
 		}
 
 	
 	}
+
+	
+		
+		
+
+
+
+	
+
+	
 
 	
 	

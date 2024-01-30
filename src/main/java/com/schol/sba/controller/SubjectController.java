@@ -36,6 +36,12 @@ public class SubjectController {
 		
 	}
 	
+	@PutMapping("academicprograms/{programId}/subjects")
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> updateSubjectList(@PathVariable int programId,@RequestBody SubjectRequest request){
+		return service.updateSubjectList(programId,request);
+		
+	} 
+	
 	
 	
 

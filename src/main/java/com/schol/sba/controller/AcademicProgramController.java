@@ -33,5 +33,9 @@ public class AcademicProgramController {
 	public ResponseEntity<ResponseStructure<List<AcademicProgramResponse>>> findAcademicProgram(@PathVariable int schoolId){
 		return academicService.findAcademicProgram(schoolId);
 	}
+	
+	
+	
+	
 
 }

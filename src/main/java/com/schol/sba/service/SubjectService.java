@@ -15,5 +15,7 @@ public interface SubjectService {
 
 	ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects();
 
+	ResponseEntity<ResponseStructure<AcademicProgramResponse>> updateSubjectList(int programId, SubjectRequest request);
+
 	
 }

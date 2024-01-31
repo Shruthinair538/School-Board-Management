@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,9 +28,14 @@ public class Subject {
 	private int subjectId;
 	private String subjectName;
 	
+	@ManyToMany
+	private List<AcademicProgram> programs;
 	
+	@OneToMany(mappedBy = "subject")
+	private List<User> users;
 	
-	
+	@OneToMany(mappedBy = "subject")
+	private List<ClassHour> classHours;
 	
 
 }

@@ -193,7 +193,19 @@ public class ClassHourServiceImpl implements ClassService{
         if (classHourDTOList == null || classHourDTOList.isEmpty()) {
             throw new InvalidClassHourException("Class hour list cannot be empty");
         }
-    }
-	}
+     }
+    
+//    public ResponseEntity<String> deleteClassHour(List<ClassHour> classhour){
+//
+//        for (ClassHour hour : classhour) {
+//            classRepo.delete(hour);
+//        }
+//        return ResponseEntity.ok("Class hours deleted successfully.");
+//    }
+//    
+    
+    
+    
+}
 
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.schol.sba.entity.AcademicProgram;
 import com.schol.sba.entity.Subject;
 import com.schol.sba.exception.AcademicProgramNorFoundException;
-
+import com.schol.sba.exception.SubjectNotFoundException;
 import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.SubjectRepository;
 import com.schol.sba.repository.UserRepository;
@@ -34,6 +34,9 @@ public class SubjectServiceImpl implements SubjectService{
 	
 	@Autowired
 	private ResponseStructure<AcademicProgramResponse> structure;
+	
+	@Autowired
+	private ResponseStructure<SubjectResponse> subjects;
 	
 	@Autowired
 	private AcademicProgramServiceImpl academicService;
@@ -145,6 +148,19 @@ public class SubjectServiceImpl implements SubjectService{
 		structure.setData(academicService.mapToAcademicProgramResponse(academicProgram));
 		return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure,HttpStatus.OK); 
     }
+
+
+	@Override
+	public ResponseEntity<ResponseStructure<SubjectResponse>> deleteSubject(int subjectId) {
+		Subject subject = subjectRepo.findById(subjectId).orElseThrow(()-> new SubjectNotFoundException("Subject doesn't exist!!"));
+		subjectRepo.delete(subject);
+		
+		subjects.setStatusCode(HttpStatus.OK.value());
+		subjects.setMessage("Deleted the subject successfully");
+		subjects.setData(mapToSubjectResponse(subject));
+		return new ResponseEntity<ResponseStructure<SubjectResponse>>(subjects,HttpStatus.OK); 
+    
+	}
 	
 
 }

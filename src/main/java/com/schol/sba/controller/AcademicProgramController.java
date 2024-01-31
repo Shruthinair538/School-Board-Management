@@ -5,14 +5,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.schol.sba.enums.UserRole;
 import com.schol.sba.requestdto.AcademicProgramRequest;
 import com.schol.sba.responsedto.AcademicProgramResponse;
+import com.schol.sba.responsedto.UserResponse;
 import com.schol.sba.service.AcademicProgramService;
 import com.schol.sba.util.ResponseStructure;
 
@@ -34,7 +37,11 @@ public class AcademicProgramController {
 		return academicService.findAcademicProgram(schoolId);
 	}
 	
-	
+	@DeleteMapping("academic-programs/{programId}")
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteAcademicProgram(@PathVariable int programId){
+		return academicService.deleteAcademicProgram(programId);
+	}
+
 	
 	
 

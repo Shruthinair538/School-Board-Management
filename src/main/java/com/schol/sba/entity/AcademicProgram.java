@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.schol.sba.enums.ProgramType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,6 +40,7 @@ public class AcademicProgram {
 	private String programName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	private boolean isDeleted;
 	
 	@ManyToOne
 	private School school;
@@ -49,7 +51,7 @@ public class AcademicProgram {
 	@ManyToMany
 	private List<User> users=new ArrayList<>();
 	
-	@OneToMany
+	@OneToMany(mappedBy = "aList", fetch = FetchType.EAGER)
 	private List<ClassHour> classHours;
 	
 	

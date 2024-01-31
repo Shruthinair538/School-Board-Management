@@ -123,11 +123,15 @@ public class ServiceImplementation implements SchoolService{
 
 	}
 
+	
+	//soft delete:it marks the row as deleted by setting it to 1.
 	@Override
 	public ResponseEntity<ResponseStructure<SchoolResponse>> deleteSchool(int schoolId) {
 		School school = schoolRepo.findById(schoolId).orElseThrow(()-> new SchoolNotFoundException("School not found!!!"));
-        schoolRepo.delete(school);
-		
+       
+        school.setDeleted(true);
+        schoolRepo.save(school);
+        
 		structure.setStatusCode(HttpStatus.OK.value());
 		structure.setMessage("School deleted successfully!!!");
 		structure.setData(mapToSchoolResponse(school));

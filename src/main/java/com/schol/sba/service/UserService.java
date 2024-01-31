@@ -25,6 +25,8 @@ public interface UserService {
 	ResponseEntity<ResponseStructure<UserResponse>> registerAdmin(UserRequest request);
 
 
+	ResponseEntity<ResponseStructure<List<UserResponse>>> fetchAllSubjects(int programId, String userRole);
+
 	
 
 }

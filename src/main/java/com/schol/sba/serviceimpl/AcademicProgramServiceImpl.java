@@ -11,11 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.schol.sba.entity.AcademicProgram;
 import com.schol.sba.entity.School;
+import com.schol.sba.entity.User;
+import com.schol.sba.enums.UserRole;
+import com.schol.sba.exception.AcademicProgramNorFoundException;
 import com.schol.sba.exception.SchoolNotFoundException;
 import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.SchoolRepo;
 import com.schol.sba.requestdto.AcademicProgramRequest;
 import com.schol.sba.responsedto.AcademicProgramResponse;
+import com.schol.sba.responsedto.UserResponse;
 import com.schol.sba.service.AcademicProgramService;
 import com.schol.sba.util.ResponseStructure;
 
@@ -30,6 +34,10 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 	
 	@Autowired
 	private ResponseStructure<AcademicProgramResponse> structure;
+	
+	@Autowired
+	private AcademicProgram academic;
+	
 	
 	private AcademicProgram mapToAcademicProgram(AcademicProgramRequest request) {
 		return AcademicProgram.builder()
@@ -82,5 +90,21 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 		}).orElseThrow(()-> new SchoolNotFoundException("School doesn't exist!!!"));
 		
 	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteAcademicProgram(int programId) {
+		AcademicProgram academicProgram = academicRepo.findById(programId).orElseThrow(()-> new AcademicProgramNorFoundException("Academic Program doesn't exist!!"));
+		
+        academicProgram.setDeleted(true);
+        academicRepo.save(academicProgram);
+		
+	
+		structure.setStatusCode(HttpStatus.OK.value());
+		structure.setMessage("Academic programs deleted successfully!!!!");
+		structure.setData(mapToAcademicProgramResponse(academicProgram));
+		return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure,HttpStatus.OK);
+	
+	}
+
 
 }

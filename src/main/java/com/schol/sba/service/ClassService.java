@@ -14,5 +14,7 @@ public interface ClassService {
 	ResponseEntity<ResponseStructure<ClassHourResponse>> generateClassHour(int programId);
 
 	ResponseEntity<String> updateClassHour(List<ClassHourDTO> request);
+	
+	ResponseEntity<String> generateClassHoursForNext6Days();
 
 }

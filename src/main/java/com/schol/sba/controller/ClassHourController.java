@@ -35,5 +35,11 @@ public class ClassHourController {
 		return ResponseEntity.ok("Class hours updated successfully!!");
 	}
 	
+	@PostMapping("/class-hours")
+	public ResponseEntity<String> generateClassHoursForNext6Days(){
+		return service.generateClassHoursForNext6Days();
+	}
+	
+	
 
 }

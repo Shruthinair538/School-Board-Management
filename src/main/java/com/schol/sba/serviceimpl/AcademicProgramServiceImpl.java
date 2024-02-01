@@ -98,7 +98,6 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
         academicProgram.setDeleted(true);
         academicRepo.save(academicProgram);
 		
-	
 		structure.setStatusCode(HttpStatus.OK.value());
 		structure.setMessage("Academic programs deleted successfully!!!!");
 		structure.setData(mapToAcademicProgramResponse(academicProgram));

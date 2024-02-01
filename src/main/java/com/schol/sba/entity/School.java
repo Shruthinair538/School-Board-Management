@@ -1,5 +1,6 @@
 package com.schol.sba.entity;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 

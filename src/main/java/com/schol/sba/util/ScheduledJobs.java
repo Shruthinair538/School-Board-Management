@@ -17,6 +17,9 @@ import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.ClassHourRepository;
 import com.schol.sba.repository.SchoolRepo;
 import com.schol.sba.repository.UserRepository;
+import com.schol.sba.serviceimpl.ClassHourServiceImpl;
+
+import jakarta.transaction.Transactional;
 
 @Component
 public class ScheduledJobs {
@@ -32,14 +35,19 @@ public class ScheduledJobs {
 	
 	@Autowired
 	private AcademicProgramRepository academicRepo;
+	
+	@Autowired
+	private ClassHourServiceImpl classHour;
 
 
 	@Scheduled(fixedDelay = 1000l*60)
 	public void test()
 	{
-		deleteUserIfDeleted();
-		deleteSchoolIfDeleted();
-//		deleteAcademicProgramIfDeleted();
+//		deleteUserIfDeleted();
+//		deleteSchoolIfDeleted();
+		deleteAcademicProgramIfDeleted();
+//		classHour.generateClassHoursForNext6Days();
+		
 	}
 
 	private void deleteUserIfDeleted() {
@@ -47,7 +55,7 @@ public class ScheduledJobs {
 	        if (!UserRole.ADMIN.equals(user.getUserRole()) && Boolean.TRUE.equals(user.isDeleted())) {
 	            for (ClassHour classHour : user.getClassHours()) {
 	                classHour.setUser(null);
-	            }
+	           }
 	            classHourRepo.saveAll(user.getClassHours());
 
 	            userRepo.delete(user);
@@ -76,31 +84,44 @@ public class ScheduledJobs {
 
 	    schoolRepo.deleteAll(schoolsToDelete);
 	}
-
-	private void deleteAcademicProgramIfDeleted()
-	{
 		
-		academicRepo.findAll().stream()
-		.filter(AcademicProgram::isDeleted)
-		.forEach(academicProgram -> 
-		{
-			//Deleting All the Class Hours related to the Academic Program
-			if(!academicProgram.getClassHours().isEmpty())
-				classHourRepo.deleteAll(academicProgram.getClassHours());
-
-			academicProgram.getUsers().forEach(user -> user.setAcademicProgram(null));
-			userRepo.saveAll(academicProgram.getUsers());
-
-			academicRepo.delete(academicProgram);
-		});
-
-
-	}
 	
 //	private void deleteAcademicProgramIfDeleted() {
-//		List<AcademicProgram> deleteProgram=academicRepo.findByIsDeleted(true);
-//		for (AcademicProgram academicProgram : deleteProgram) {
-//			academicProgram.getClassHours().
+//		for(AcademicProgram academicProgram:academicRepo.findAll()) {
+//			if(academicProgram.isDeleted()) {
+//				if(!academicProgram.getClassHours().isEmpty()) {
+//					classHourRepo.deleteAll(academicProgram.getClassHours());
+//				}
+//				for(User user: academicProgram.getUsers()) {
+//					user.setAcademicProgram(null);
+//				}
+//				userRepo.saveAll(academicProgram.getUsers());
+//				academicRepo.delete(academicProgram);
+//			}
 //		}
-//	}
-}
+//}
+	@Transactional
+	public void deleteAcademicProgramIfDeleted()
+	{
+		List<AcademicProgram> academicPrograms = academicRepo.findByIsDeleted(true);
+		for(AcademicProgram academicProgram:academicPrograms)
+		{
+			List<ClassHour> listOfClassHours = academicProgram.getClassHours();
+			
+			for(ClassHour listHour:listOfClassHours)
+			{
+				classHourRepo.delete(listHour);;
+			}
+			academicRepo.delete(academicProgram);
+
+		}
+	}
+	}
+	
+	
+	
+
+
+	
+
+

@@ -1,13 +1,17 @@
 package com.schol.sba.serviceimpl;
 
 import java.time.LocalDateTime;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.schol.sba.entity.ClassHour;
 import com.schol.sba.entity.Schedule;
 import com.schol.sba.entity.School;
@@ -30,6 +34,8 @@ import com.schol.sba.requestdto.ClassHourDTO;
 import com.schol.sba.responsedto.ClassHourResponse;
 import com.schol.sba.service.ClassService;
 import com.schol.sba.util.ResponseStructure;
+
+import jakarta.transaction.Transactional;
 @Service
 public class ClassHourServiceImpl implements ClassService{
 
@@ -144,6 +150,7 @@ public class ClassHourServiceImpl implements ClassService{
 				.orElseThrow(() -> new AcademicProgramNorFoundException("Invalid Program Id"));
 
 
+		
 	}
 
 
@@ -194,6 +201,61 @@ public class ClassHourServiceImpl implements ClassService{
             throw new InvalidClassHourException("Class hour list cannot be empty");
         }
      }
+    
+    @Transactional
+	 public ResponseEntity<String> generateClassHoursForNext6Days() {
+	        // Get existing ClassHour data from the database
+	        List<ClassHour> existingClassHours = classRepo.findAll();
+
+	        // Get the current date and time
+	        LocalDateTime currentDate = LocalDateTime.now();
+
+	        // Generate ClassHour instances for the next 6 days
+	       
+	        int day=1;
+	        
+	            LocalDateTime nextDay = currentDate.plusDays(day);
+
+	            // Create new instances based on existing data
+	            List<ClassHour> newClassHours = existingClassHours.stream()
+	                    .map(existingClassHour -> {
+	                        ClassHour newClassHour = new ClassHour();
+	                        newClassHour.setBeginsAt(nextDay.withHour(existingClassHour.getBeginsAt().getHour())
+	                                .withMinute(existingClassHour.getBeginsAt().getMinute()));
+	                        newClassHour.setEndsAt(nextDay.withHour(existingClassHour.getEndsAt().getHour())
+	                                .withMinute(existingClassHour.getEndsAt().getMinute()));
+	                        newClassHour.setRoomNo(existingClassHour.getRoomNo());
+	                        newClassHour.setClassStatus(existingClassHour.getClassStatus());
+
+	                        Subject existingSubject = existingClassHour.getSubject();
+	                        if (existingSubject != null) {
+	                            // Reattach Subject entity to the persistence context using repository
+	                            Subject attachedSubject = subjectRepo.findById(existingSubject.getSubjectId())
+	                                    .orElseThrow(() -> new SubjectNotFoundException("Subject not found"));
+	                            newClassHour.setSubject(attachedSubject);
+	                        }
+
+	                        newClassHour.setAList(existingClassHour.getAList());
+	                        newClassHour.setUser(existingClassHour.getUser());
+	                        return newClassHour;
+	                    })
+	                    .collect(Collectors.toList());
+
+	            // Save the newly generated ClassHour instances
+	            classRepo.saveAll(newClassHours);
+	            return ResponseEntity.ok("Class hours auto generated successfully.");
+	        
+	    }
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
     
 //    public ResponseEntity<String> deleteClassHour(List<ClassHour> classhour){
 //

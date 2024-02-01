@@ -1,11 +1,17 @@
 package com.schol.sba.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.schol.sba.entity.AcademicProgram;
+import com.schol.sba.entity.ClassHour;
 import com.schol.sba.entity.School;
+import com.schol.sba.entity.User;
 import com.schol.sba.enums.UserRole;
 import com.schol.sba.repository.AcademicProgramRepository;
 import com.schol.sba.repository.ClassHourRepository;
@@ -33,40 +39,47 @@ public class ScheduledJobs {
 	{
 		deleteUserIfDeleted();
 		deleteSchoolIfDeleted();
-		deleteAcademicProgramIfDeleted();
+//		deleteAcademicProgramIfDeleted();
 	}
 
-	private void deleteUserIfDeleted()
-	{
-		userRepo.findAll().stream()
-		.filter(user -> !user.getUserRole().equals(UserRole.ADMIN) && user.isDeleted())
-		.forEach(user ->
-		{
-			user.getClassHours().forEach(classHour -> classHour.setUser(null));
-			classHourRepo.saveAll(user.getClassHours());
+	private void deleteUserIfDeleted() {
+	    for (User user : userRepo.findAll()) {
+	        if (!UserRole.ADMIN.equals(user.getUserRole()) && Boolean.TRUE.equals(user.isDeleted())) {
+	            for (ClassHour classHour : user.getClassHours()) {
+	                classHour.setUser(null);
+	            }
+	            classHourRepo.saveAll(user.getClassHours());
 
-			userRepo.delete(user);
-		});
+	            userRepo.delete(user);
+	        }
+	    }
 	}
 
-	private void deleteSchoolIfDeleted()
-	{
-		schoolRepo.findAll().stream()
-		.filter(School::isDeleted)
-		.forEach(school ->
-		{
-			school.getUList().forEach(user -> user.setSchool1(null));
-			userRepo.saveAll(school.getUList());
+	public void deleteSchoolIfDeleted() {
+	    List<School> schoolsToDelete = new ArrayList<>();
 
-			school.getAList().forEach(academicProgram -> academicProgram.setSchool(null));
-			academicRepo.saveAll(school.getAList());
+	    for (School school : schoolRepo.findAll()) {
+	        if (school.isDeleted()) {
+	            for (User user : school.getUList()) {
+	                user.setSchool1(null);
+	            }
+	            userRepo.saveAll(school.getUList());
 
-			schoolRepo.delete(school);
-		});
+	            for (AcademicProgram academicProgram : school.getAList()) {
+	                academicProgram.setSchool(null);
+	            }
+	            academicRepo.saveAll(school.getAList());
+
+	            schoolsToDelete.add(school);
+	        }
+	    }
+
+	    schoolRepo.deleteAll(schoolsToDelete);
 	}
 
 	private void deleteAcademicProgramIfDeleted()
 	{
+		
 		academicRepo.findAll().stream()
 		.filter(AcademicProgram::isDeleted)
 		.forEach(academicProgram -> 
@@ -83,4 +96,11 @@ public class ScheduledJobs {
 
 
 	}
+	
+//	private void deleteAcademicProgramIfDeleted() {
+//		List<AcademicProgram> deleteProgram=academicRepo.findByIsDeleted(true);
+//		for (AcademicProgram academicProgram : deleteProgram) {
+//			academicProgram.getClassHours().
+//		}
+//	}
 }

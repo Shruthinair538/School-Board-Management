@@ -1,7 +1,8 @@
 package com.schol.sba.entity;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-
+import java.time.LocalTime;
 import java.util.List;
 
 import com.schol.sba.enums.ClassStatus;
@@ -33,6 +34,7 @@ public class ClassHour {
 	private LocalDateTime endsAt;
 	private int roomNo;
 	private ClassStatus classStatus;
+	private DayOfWeek dayOfWeek;
 	
 	@ManyToOne
 	private Subject subject;

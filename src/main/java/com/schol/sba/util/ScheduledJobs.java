@@ -45,8 +45,8 @@ public class ScheduledJobs {
 	{
 //		deleteUserIfDeleted();
 //		deleteSchoolIfDeleted();
-		deleteAcademicProgramIfDeleted();
-//		classHour.generateClassHoursForNext6Days();
+//		deleteAcademicProgramIfDeleted();
+		classHour.generateClassHoursForNext6Days();
 		
 	}
 
@@ -86,20 +86,7 @@ public class ScheduledJobs {
 	}
 		
 	
-//	private void deleteAcademicProgramIfDeleted() {
-//		for(AcademicProgram academicProgram:academicRepo.findAll()) {
-//			if(academicProgram.isDeleted()) {
-//				if(!academicProgram.getClassHours().isEmpty()) {
-//					classHourRepo.deleteAll(academicProgram.getClassHours());
-//				}
-//				for(User user: academicProgram.getUsers()) {
-//					user.setAcademicProgram(null);
-//				}
-//				userRepo.saveAll(academicProgram.getUsers());
-//				academicRepo.delete(academicProgram);
-//			}
-//		}
-//}
+
 	@Transactional
 	public void deleteAcademicProgramIfDeleted()
 	{

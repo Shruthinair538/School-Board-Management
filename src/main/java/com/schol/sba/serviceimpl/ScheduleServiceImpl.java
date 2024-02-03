@@ -132,10 +132,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 		
 	}
 	
-//	public ResponseEntity<String> deleteSchedule(Schedule schedule){
-//		scheduleRepo.delete(schedule);
-//		return ResponseEntity.ok("Schedule deleted successfully.");
-//	}
+
 	
 	
 

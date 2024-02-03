@@ -1,18 +1,19 @@
 package com.schol.sba.serviceimpl;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.schol.sba.entity.Schedule;
-import com.schol.sba.entity.School;
+
 import com.schol.sba.exception.IllegalRequestException;
 import com.schol.sba.exception.ScheduleNotFoundException;
-import com.schol.sba.exception.SchoolNotFoundException;
+
 import com.schol.sba.exception.UserNotFoundByIdException;
 import com.schol.sba.repository.ScheduleRepository;
 import com.schol.sba.repository.SchoolRepo;
@@ -68,6 +69,9 @@ public class ScheduleServiceImpl implements ScheduleService{
 		return schoolRepo.findById(schoolId).map(u->{
 			if(u.getSchedule()==null) {
 				Schedule schedule = mapToSchedule(request);
+				
+				validateBreaksAndLunch(schedule);
+				
 				schedule = scheduleRepo.save(schedule);
 				u.setSchedule(schedule);
 				schoolRepo.save(u);
@@ -82,6 +86,23 @@ public class ScheduleServiceImpl implements ScheduleService{
 		}).orElseThrow(()-> new UserNotFoundByIdException("Failed to save the data!!"));
 		
 		
+	}
+	
+	private void validateBreaksAndLunch(Schedule schedule) {
+
+	LocalTime breakTime =schedule.getBreakTime();
+	LocalTime lunchTime =schedule.getLunchTime();
+    LocalTime opensAt =schedule.getOpensAt();
+    
+	Duration classTime=schedule.getClassHourLengthInMinutes();
+	long totalBreakMinutes = opensAt.until(breakTime, ChronoUnit.MINUTES);
+	long totalLunchMinutes = opensAt.until(lunchTime, ChronoUnit.MINUTES);
+	totalLunchMinutes=totalBreakMinutes-schedule.getLunchLengthInMinutes().toMinutes();
+	
+	if(!(totalBreakMinutes%(classTime.toMinutes())==0 && totalLunchMinutes%classTime.toMinutes()==0)) {
+	throw new IllegalArgumentException("Break and lunch should start after a class hour ends");
+	  }
+
 	}
 
 	@Override

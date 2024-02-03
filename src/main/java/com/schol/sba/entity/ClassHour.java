@@ -40,7 +40,7 @@ public class ClassHour {
 	private Subject subject;
 	
 	@ManyToOne
-	private AcademicProgram aList;
+	private AcademicProgram academicProgram;
 	
 	@ManyToOne
 	private User user;

@@ -46,7 +46,7 @@ public class ScheduledJobs {
 //		deleteUserIfDeleted();
 //		deleteSchoolIfDeleted();
 //		deleteAcademicProgramIfDeleted();
-		classHour.generateClassHoursForNext6Days();
+//		classHour.createClassHourForNextWeek();
 		
 	}
 
